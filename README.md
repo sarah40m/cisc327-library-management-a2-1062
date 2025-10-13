@@ -2,6 +2,9 @@
 
 ## Overview
 
+[![test automation](https://github.com/sarah40m/cisc327-library-management-a2-1062/actions/workflows/test-auto.yml/badge.svg)](https://github.com/sarah40m/cisc327-library-management-a2-1062/actions/workflows/test-auto.yml)
+
+
 This project contains a partial implementation of a Flask-based Library Management System with SQLite database, designed for CISC 327 (Software Quality Assurance) coursework.
 
 Students are provided with:
