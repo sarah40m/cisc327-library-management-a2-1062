@@ -22,13 +22,13 @@ def test_patron_status_report_current_loans_fees_count_and_history():
     b2 = database.get_book_by_isbn("9780134034287")  # will be borrowed+returned (history)
     assert b1 and b2
 
-    #seed ONE overdue current loan for b1:
+    #seed ONE overdue current loan:
     borrow_date_overdue = datetime.now() - timedelta(days=20)   # borrowed 20 days ago
     due_date_overdue = borrow_date_overdue + timedelta(days=14) # due 6 days ago -> 6 * $0.50 = $3.00
     assert database.insert_borrow_record(patron, b1["id"], borrow_date_overdue, due_date_overdue)
     assert database.update_book_availability(b1["id"], -1)
 
-    #seed ONE historical loan for b2 (borrowed and returned on time)
+    #seed ONE historical loan, borrowed and returned on time
     borrow_date_hist = datetime.now() - timedelta(days=10)
     due_date_hist = borrow_date_hist + timedelta(days=14)
     assert database.insert_borrow_record(patron, b2["id"], borrow_date_hist, due_date_hist)
@@ -70,10 +70,8 @@ def test_patron_status_no_loans_returns_empty_zero():
     """R7 negative: patron with no loans should get zeros and empty lists."""
     patron = "000111"
 
-    # act
     report = get_patron_status_report(patron)
-
-    # assert
+    
     assert report["borrowed_count"] == 0
     assert float(report["total_late_fees"]) == 0.00
     assert isinstance(report["current_loans"], list) and len(report["current_loans"]) == 0
@@ -84,7 +82,7 @@ def test_patron_status_multiple_current_loans_fee_sum_and_count():
     """R7 positive: two current overdue loans; fees should sum and count should be 2."""
     patron = "123457"
 
-    # arrange: add two books
+
     ok, _ = add_book_to_catalog("Overdue Five", "Tester", "9012345678901", 1)
     assert ok is True
     ok, _ = add_book_to_catalog("Overdue Ten", "Tester", "9012345678902", 1)
@@ -93,22 +91,20 @@ def test_patron_status_multiple_current_loans_fee_sum_and_count():
     b2 = database.get_book_by_isbn("9012345678902")
     assert b1 and b2
 
-    # b1: 5 days overdue today -> $2.50
+    #5 days overdue today -> $2.50
     borrow_1 = datetime.now() - timedelta(days=19)   # 14 + 5
     due_1 = borrow_1 + timedelta(days=14)
     assert database.insert_borrow_record(patron, b1["id"], borrow_1, due_1)
     assert database.update_book_availability(b1["id"], -1)
 
-    # b2: 10 days overdue today -> $6.50
+    #10 days overdue today -> $6.50
     borrow_2 = datetime.now() - timedelta(days=24)   # 14 + 10
     due_2 = borrow_2 + timedelta(days=14)
     assert database.insert_borrow_record(patron, b2["id"], borrow_2, due_2)
     assert database.update_book_availability(b2["id"], -1)
 
-    # act
     report = get_patron_status_report(patron)
 
-    # assert
     assert report["borrowed_count"] == 2
     assert len(report["current_loans"]) == 2
     ids = {row["book_id"] for row in report["current_loans"]}
@@ -120,7 +116,7 @@ def test_patron_status_history_dates_are_strings():
     """R7 format: history returns date strings 'YYYY-MM-DD' for borrow/return."""
     patron = "123458"
 
-    # arrange: add one book, borrow and return next day (on time)
+    #add one book, borrow and return next day (on time)
     ok, _ = add_book_to_catalog("History Book", "Tester", "9012345678903", 1)
     assert ok is True
     b = database.get_book_by_isbn("9012345678903")
@@ -133,10 +129,8 @@ def test_patron_status_history_dates_are_strings():
     assert database.update_borrow_record_return_date(patron, b["id"], ret_date)
     assert database.update_book_availability(b["id"], +1)
 
-    # act
     report = get_patron_status_report(patron)
 
-    # assert
     assert report["borrowed_count"] == 0
     assert float(report["total_late_fees"]) == 0.00
     assert len(report["history"]) == 1
