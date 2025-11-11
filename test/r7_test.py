@@ -2,7 +2,7 @@ import pytest
 from datetime import datetime, timedelta
 
 import database
-from library_service import add_book_to_catalog, get_catalog_view, get_patron_status_report
+from services.library_service import add_book_to_catalog, get_catalog_view, get_patron_status_report
 
 #after feedback from A1, this file has been added
 #this section could also be referred to as f7_test

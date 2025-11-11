@@ -1,2 +1,5 @@
 Flask==2.3.3
 pytest==7.4.2
+requests>=2.31.0
+pytest-mock
+pytest-cov==4.1.0

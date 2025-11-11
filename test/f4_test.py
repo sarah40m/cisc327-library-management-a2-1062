@@ -2,7 +2,7 @@ import pytest
 from datetime import datetime, timedelta
 
 import database
-from library_service import (
+from services.library_service import (
     add_book_to_catalog,
     calculate_late_fee_for_book
 )

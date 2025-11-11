@@ -1,5 +1,5 @@
 import pytest
-from library_service import add_book_to_catalog, get_catalog_view
+from services.library_service import add_book_to_catalog, get_catalog_view
 
 #after feedback from A1, this file has been added
 
